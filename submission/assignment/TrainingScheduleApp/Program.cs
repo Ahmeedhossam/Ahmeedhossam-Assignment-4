@@ -156,3 +156,138 @@ void CopySessionName(string[] sessionNames)
         Console.WriteLine(sessionNames[i]);
     }
 }
+
+int CalculateTotalDuration(int[] sessionsDuration)
+{
+    int totalDuration = 0;
+    for (int i = 0; i < sessionsDuration.Length; i++)
+    {
+        totalDuration += sessionsDuration[i];
+    }
+    Console.WriteLine($"Total Duration : {totalDuration}");
+    return totalDuration;
+}
+
+int CalculateLongestDuration(int[] sessionsDuration)
+{
+    int max = sessionsDuration[0];
+    for (int i = 1; i < sessionsDuration.Length; i++)
+    {
+        if (sessionsDuration[i] > max)
+        {
+            max = sessionsDuration[i];
+        }
+    }
+    Console.WriteLine($"Longest Duration: {max} minutes");
+    return max;
+}
+
+int CalculateShortestDuration(int[] sessionsDuration)
+{
+    int min = sessionsDuration[0];
+    for (int i = 1; i < sessionsDuration.Length; i++)
+    {
+        if (sessionsDuration[i] < min)
+        {
+            min = sessionsDuration[i];
+        }
+    }
+    Console.WriteLine($"Shortest Duration: {min} minutes");
+    return min;
+}
+
+double CalculateAverageDuration(int[] sessionsDuration)
+{
+    double sum = 0;
+    for (int i = 0; i < sessionsDuration.Length; i++)
+    {
+        sum += sessionsDuration[i];
+    }
+    double average = sum / sessionsDuration.Length;
+    Console.WriteLine($"Average Duration: {average} minutes");
+    return average;
+}
+void SortAndDisplayDurations(int[] sessionDurations)
+{
+    int[] sortedDurations = new int[sessionDurations.Length];
+    Array.Copy(sessionDurations, sortedDurations, sortedDurations.Length);
+    Array.Sort(sortedDurations);
+
+    Console.WriteLine("Sorted Durations:");
+    for (int i = 0; i < sortedDurations.Length; i++)
+    {
+        Console.WriteLine($"{sortedDurations[i]} minutes");
+    }
+}
+
+void AddMinutesToSessionDuration(ref int duration)
+{
+    Console.WriteLine("Enter minutes you want to add to the session duration");
+    int minutes = Convert.ToInt32(Console.ReadLine());
+    duration += minutes;
+}
+
+bool TryGetSessionDetails(string sessionName, string[] names, int[] durations, out int index, out int duration)
+{
+    int indexx = Array.IndexOf(names, sessionName);
+
+    if (indexx == -1)
+    {
+        index = indexx;
+        duration = 0;
+
+        return false;
+    }
+    else
+    {
+        index = indexx;
+        duration = durations[indexx];
+
+        Console.WriteLine($"index : {index}");
+        Console.WriteLine($"duration : {duration}");
+
+        return true;
+    }
+}
+void ReferenceTypeWithoutRef(string[] names)
+{
+    names[0] = "Advanced C#";
+}
+
+int CalculateTotalDuration2(params int[] sessionDurations)
+{
+    int totalDuration = 0;
+    for (int i = 0; i < sessionDurations.Length; i++)
+    {
+        totalDuration += sessionDurations[i];
+    }
+    return totalDuration;
+}
+
+void DisplaySessionDateDetails(string[] sessionNames, DateTime[] sessionDates, int[] sessionDurations)
+{
+    Console.WriteLine("Enter session name:");
+    string sessionName = Console.ReadLine();
+
+    int index = Array.FindIndex(sessionNames, name => name.Equals(sessionName, StringComparison.OrdinalIgnoreCase));
+
+    if (index == -1)
+    {
+        Console.WriteLine("Session not found.");
+        return;
+    }
+
+    DateTime date = sessionDates[index];
+    int duration = sessionDurations[index];
+    DateTime endTime = date.AddMinutes(duration);
+
+    Console.WriteLine($"Session: {sessionNames[index]}");
+    Console.WriteLine($"Date: {date.ToString("dd MMMM yyyy")}");
+    Console.WriteLine($"Day: {date.DayOfWeek}");
+    Console.WriteLine($"Year: {date.Year}");
+    Console.WriteLine($"Month: {date.Month}");
+    Console.WriteLine($"Day Number: {date.Day}");
+    Console.WriteLine($"Start Time: {date.ToString("hh:mm tt")}");
+    Console.WriteLine($"Duration: {duration} minutes");
+    Console.WriteLine($"End Time: {endTime.ToString("hh:mm tt")}");
+}
