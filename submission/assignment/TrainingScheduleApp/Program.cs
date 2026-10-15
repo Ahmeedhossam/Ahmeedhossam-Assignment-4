@@ -291,3 +291,45 @@ void DisplaySessionDateDetails(string[] sessionNames, DateTime[] sessionDates, i
     Console.WriteLine($"Duration: {duration} minutes");
     Console.WriteLine($"End Time: {endTime.ToString("hh:mm tt")}");
 }
+
+void CompareTwoSessionDates(string[] sessionNames, DateTime[] sessionDates)
+{
+    Console.WriteLine("First Session:");
+    string firstSession = Console.ReadLine();
+
+    Console.WriteLine("Second Session:");
+    string secondSession = Console.ReadLine();
+
+    int firstIndex = Array.FindIndex(sessionNames, name => name.Equals(firstSession, StringComparison.OrdinalIgnoreCase));
+    int secondIndex = Array.FindIndex(sessionNames, name => name.Equals(secondSession, StringComparison.OrdinalIgnoreCase));
+
+    if (firstIndex == -1 || secondIndex == -1)
+    {
+        Console.WriteLine("One or both sessions not found.");
+        return;
+    }
+
+    TimeSpan difference = sessionDates[secondIndex] - sessionDates[firstIndex];
+    TimeSpan difference = difference.Duration();
+
+    Console.WriteLine("Difference:");
+    Console.WriteLine($"{difference.TotalDays} days");
+    Console.WriteLine($"{difference.TotalHours} hours");
+}
+
+void DisplayPastAndUpcomingSessions(string[] sessionNames, DateTime[] sessionDates)
+{
+    DateTime currentDate = DateTime.Now;
+
+    for (int i = 0; i < sessionNames.Length; i++)
+    {
+        if (sessionDates[i] < currentDate)
+        {
+            Console.WriteLine($"{sessionNames[i]} Past");
+        }
+        else
+        {
+            Console.WriteLine($"{sessionNames[i]} Upcoming");
+        }
+    }
+}
