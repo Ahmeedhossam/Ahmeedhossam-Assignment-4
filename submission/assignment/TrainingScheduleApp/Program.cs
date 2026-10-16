@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
+using System.Text;
 using static System.Collections.Specialized.BitVector32;
 
 string[] namesOfSessions =
@@ -309,8 +311,7 @@ void CompareTwoSessionDates(string[] sessionNames, DateTime[] sessionDates)
         return;
     }
 
-    TimeSpan difference = sessionDates[secondIndex] - sessionDates[firstIndex];
-    TimeSpan difference = difference.Duration();
+    TimeSpan difference = (sessionDates[secondIndex] - sessionDates[firstIndex]).Duration();
 
     Console.WriteLine("Difference:");
     Console.WriteLine($"{difference.TotalDays} days");
@@ -332,4 +333,137 @@ void DisplayPastAndUpcomingSessions(string[] sessionNames, DateTime[] sessionDat
             Console.WriteLine($"{sessionNames[i]} Upcoming");
         }
     }
+}
+
+void FindtheNextSession(string[] sessionNames, DateTime[] sessionDates)
+{
+    DateTime currentdate = DateTime.Now;
+    int nextsessionindex = Array.FindIndex(sessionDates, Date => Date > currentdate);
+    if (nextsessionindex == -1)
+    {
+        Console.WriteLine("no session after the current date");
+    }
+    else
+    {
+        TimeSpan timeremaining = (sessionDates[nextsessionindex] - currentdate).Duration();
+        Console.WriteLine("Next Session\n");
+        Console.WriteLine($"{sessionNames[nextsessionindex]}\n");
+        Console.WriteLine($"{sessionDates[nextsessionindex].ToString("dd MMMM yyyy")}\n{sessionDates[nextsessionindex].ToString(" hh mm tt ")} \n\n");
+        Console.WriteLine($"Time Remaining : \n {timeremaining.Days} days \n {timeremaining.Hours} hours");
+    }
+}
+
+void DisplaySessionDateFormats(DateTime[] sessionDates)
+{
+    DateTime selectedDate = sessionDates[1];
+
+    Console.WriteLine(selectedDate.ToString("yyyy-MM-dd"));
+    Console.WriteLine(selectedDate.ToString("dd/MM/yyyy"));
+    Console.WriteLine(selectedDate.ToString("dd MMMM yyyy"));
+    Console.WriteLine(selectedDate.ToString("dddd, dd MMMM yyyy"));
+    Console.WriteLine(selectedDate.ToString("hh:mm tt"));
+}
+
+DateTime ReadSessionDate()
+{
+    string requiredFormat = "yyyy-MM-dd HH:mm";
+    DateTime validDate;
+
+    while (true)
+    {
+        Console.WriteLine("Enter a date using exactly yyyy-MM-dd HH:mm:");
+        string input = Console.ReadLine();
+
+        bool isSuccess = DateTime.TryParseExact(
+            input,
+            requiredFormat,
+            null,
+            System.Globalization.DateTimeStyles.None,
+            out validDate
+        );
+
+        if (isSuccess)
+        {
+            return validDate;
+        }
+        else
+        {
+            Console.WriteLine("Invalid date. Please try again.");
+        }
+    }
+}
+
+void ExceptionHandlingMenuInput()
+{
+    while (true)
+    {
+        try
+        {
+            Console.WriteLine("Choose an option: \n");
+            int option = int.Parse(Console.ReadLine());
+            return;
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Invalid menu option. Enter a number.");
+        }
+    }
+}
+
+void ExceptionHandlingInvalidArrayIndex(string[] sessionNames)
+{
+    try
+    {
+        Console.WriteLine("Enter the session index : \n");
+        int sessionindex = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine($"Session : {sessionNames[sessionindex]}");
+    }
+    catch (IndexOutOfRangeException)
+    {
+        Console.WriteLine("the selected session index is out of range. ");
+    }
+    finally
+    {
+        Console.WriteLine("Input operation finished");
+    }
+}
+void ValidatesSessionDuration(int[] sessionDurations)
+{
+    Console.WriteLine("Enter the session Duration : \n");
+    int sessionDuration = Convert.ToInt32(Console.ReadLine());
+    if (sessionDuration <= 0)
+    {
+        throw new ArgumentException("Duration must be greater than zero.");
+    }
+
+    Console.WriteLine("Duration accepted");
+}
+
+string BuildReportUsingString(string[] sessionNames, DateTime[] sessionDates, int[] sessionDurations)
+{
+    string result = "";
+
+    for (int i = 0; i < sessionNames.Length; i++)
+    {
+        result += $"{sessionNames[i]} - {sessionDates[i].ToString("dd/MM/yyyy hh:mm tt")} - {sessionDurations[i]} minutes\n";
+    }
+
+    return result;
+}
+
+string BuildReportUsingStringBuilder(string[] sessionNames, DateTime[] sessionDates, int[] sessionDurations)
+{
+    StringBuilder result = new StringBuilder();
+
+    for (int i = 0; i < sessionNames.Length; i++)
+    {
+        result.Append(sessionNames[i])
+              .Append(" - ")
+              .Append(sessionDates[i].ToString("dd/MM/yyyy hh:mm tt"))
+              .Append(" - ")
+              .Append(sessionDurations[i])
+              .AppendLine(" minutes");
+    }
+
+    return result.ToString();
 }
