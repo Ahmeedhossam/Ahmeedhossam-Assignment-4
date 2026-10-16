@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Text;
 using static System.Collections.Specialized.BitVector32;
+using BenchmarkDotNet.Running;
 
 string[] namesOfSessions =
 {
@@ -28,10 +29,132 @@ int[] sessionDurations =
 240,
 180
 };
-//FindSessionIndex(namesOfSessions);
 
-//DisplayAllSessions(namesOfSessions, sessionDates, sessionDurations);
-FindSessionIndex(namesOfSessions);
+bool exit = false;
+while (!exit)
+{
+    Console.WriteLine("\n===================================");
+    Console.WriteLine("Academy Schedule Analyzer");
+    Console.WriteLine("===================================");
+    Console.WriteLine("1. Display all sessions");
+    Console.WriteLine("2. Search for a session");
+    Console.WriteLine("3. Sort session names");
+    Console.WriteLine("4. Reverse session names");
+    Console.WriteLine("5. Find session index");
+    Console.WriteLine("6. Check if session exists");
+    Console.WriteLine("7. Show duration statistics");
+    Console.WriteLine("8. Show session date details");
+    Console.WriteLine("9. Show past and upcoming sessions");
+    Console.WriteLine("10. Find next session");
+    Console.WriteLine("11. Compare two session dates");
+    Console.WriteLine("12. Read and validate a custom date");
+    Console.WriteLine("13. Select session by index");
+    Console.WriteLine("14. Validate session duration");
+    Console.WriteLine("15. Generate report using string");
+    Console.WriteLine("16. Generate report using StringBuilder");
+    Console.WriteLine("17. Run Benchmarks");
+    Console.WriteLine("0. Exit");
+
+    int choice = ExceptionHandlingMenuInput();
+
+    Console.WriteLine("\n-----------------------------------");
+
+    switch (choice)
+    {
+        case 1:
+            DisplayAllSessions(namesOfSessions, sessionDates, sessionDurations);
+            break;
+
+        case 2:
+            Console.WriteLine("Enter session name to search:");
+            string searchName = Console.ReadLine();
+            SearchForSession(searchName, namesOfSessions, sessionDates, sessionDurations);
+            break;
+
+        case 3:
+            SortSessionNames(namesOfSessions);
+            break;
+
+        case 4:
+            ReverseSessionNames(namesOfSessions);
+            break;
+
+        case 5:
+            FindSessionIndex(namesOfSessions);
+            break;
+
+        case 6:
+            SessionExists(namesOfSessions);
+            break;
+
+        case 7:
+            CalculateTotalDuration(sessionDurations);
+            CalculateAverageDuration(sessionDurations);
+            CalculateShortestDuration(sessionDurations);
+            CalculateLongestDuration(sessionDurations);
+            break;
+
+        case 8:
+            DisplaySessionDateDetails(namesOfSessions, sessionDates, sessionDurations);
+            break;
+
+        case 9:
+            DisplayPastAndUpcomingSessions(namesOfSessions, sessionDates);
+            break;
+
+        case 10:
+            FindtheNextSession(namesOfSessions, sessionDates);
+            break;
+
+        case 11:
+            CompareTwoSessionDates(namesOfSessions, sessionDates);
+            break;
+
+        case 12:
+            DateTime validDate = ReadSessionDate();
+            Console.WriteLine($"Successfully read valid date: {validDate}");
+            break;
+
+        case 13:
+            ExceptionHandlingInvalidArrayIndex(namesOfSessions);
+            break;
+
+        case 14:
+            try
+            {
+                ValidatesSessionDuration(sessionDurations);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            break;
+
+        case 15:
+            Console.WriteLine("Report (String Concatenation):");
+            Console.WriteLine(BuildReportUsingString(namesOfSessions, sessionDates, sessionDurations));
+            break;
+
+        case 16:
+            Console.WriteLine("Report (StringBuilder):");
+            Console.WriteLine(BuildReportUsingStringBuilder(namesOfSessions, sessionDates, sessionDurations));
+            break;
+
+        case 17:
+            Console.WriteLine("Starting Benchmark... (Ensure you are running in Release mode)");
+            BenchmarkRunner.Run<StringBenchmark>();
+            break;
+
+        case 0:
+            exit = true;
+            Console.WriteLine("Exiting program...");
+            break;
+
+        default:
+            Console.WriteLine("Invalid choice. Please select from the menu.");
+            break;
+    }
+}
 
 void DisplayAllSessions(string[] sessionNames, DateTime[] sessionDates, int[] sessionDurations)
 {
@@ -393,7 +516,7 @@ DateTime ReadSessionDate()
     }
 }
 
-void ExceptionHandlingMenuInput()
+int ExceptionHandlingMenuInput()
 {
     while (true)
     {
@@ -401,7 +524,7 @@ void ExceptionHandlingMenuInput()
         {
             Console.WriteLine("Choose an option: \n");
             int option = int.Parse(Console.ReadLine());
-            return;
+            return option;
         }
         catch (FormatException)
         {
